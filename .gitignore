@@ -1,0 +1,38 @@
+# Arquivos de compilação
+*.pyc
+*.pyo
+__pycache__
+
+# Arquivos de configuração
+*.sqlite3
+*.env
+*.DS_Store
+
+# Dependências
+/.venv
+/node_modules
+
+# Arquivos de mídia gerados
+/media
+/staticfiles
+
+# Arquivos de logs
+/log
+*.log
+
+# Arquivos de backup
+*.bak
+*.swp
+*.swo
+
+# Arquivos de configuração de IDEs
+/.vscode
+.idea
+
+# Arquivos de cache
+/.cache
+
+# Ambiente virtual do pipenv
+/.env
+node_modules/
+.env
