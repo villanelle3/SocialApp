@@ -1,3 +1,0 @@
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\env\Scripts\activate
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Restricted
