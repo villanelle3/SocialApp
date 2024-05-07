@@ -9,4 +9,4 @@ def home_view(request, *args, **kwargs):
 def tweet_detail_view(request, tweet_id, *args, **kwargs):
     # print(tweet_id)
     obj = Tweet.objects.get(id = tweet_id)
-    return HttpResponse(f"<p>Esse é o seu tweet: {obj.content}<p/>")
+    return HttpResponse(f"<p>New tweet: {obj.content}<p/>")
