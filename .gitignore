@@ -32,7 +32,3 @@ __pycache__
 # Arquivos de cache
 /.cache
 
-# Ambiente virtual do pipenv
-/.env
-node_modules/
-.env
