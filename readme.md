@@ -27,3 +27,6 @@ Este é um aplicativo de uma rede social.
     ```
 
 3. Agora você está pronto para usar o SocialApp dentro do ambiente virtual.
+
+
+Projeto em andamento...
