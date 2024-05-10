@@ -8,7 +8,7 @@ def home_view(request, *args, **kwargs):
 
 def tweet_list_view(request, *args, **kwargs):
     QuerySet = Tweet.objects.all()
-    tweets_list = [{"id": x.id, "content":x.content} for x in QuerySet]
+    tweets_list = [{"id": x.id, "content":x.content, "likes":12} for x in QuerySet]
     data = {
         "response": tweets_list
     }
