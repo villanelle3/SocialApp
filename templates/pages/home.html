@@ -1,11 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    Wellcome again!
+    <div class="row text-center">
+        <div class="col">
+            <h2>Wellcome!</h2>
+        </div>
+    </div>
 
-    <div id="tweets">
-        Loading...
-        
+    <div class="row mb-3">
+        <div class="col-md-4 mx-auto col-10">
+            <form class="form" method="post" action="/create-tweet/">
+                {% csrf_token %}
+                <input type="hidden" value="/" name="next"/>
+                <textarea class="form-control" name="content" required placeholder="What's happening?"></textarea>
+                <button type="submit" class="btn btn-primary">Tweet</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row" id="tweets">
+        Loading... 
     </div>
 
     <script>
@@ -26,7 +40,7 @@
         }
 
         function formatTweet(tweet){
-            var formatedTweet = "<div class='mb-4 tweet' id='tweet-" + tweet.id + "'>" +
+            var formatedTweet = "<div class='col-12 col-md-10 mx-auto border rounded py-3 mb-4 tweet' id='tweet-" + tweet.id + "'>" +
                                 "<p>" + tweet.content + "</p>" + "<div>" + likeBtn(tweet) + "</div></div>"
             return formatedTweet
         }
