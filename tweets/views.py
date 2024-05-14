@@ -19,10 +19,19 @@ def home_view(request, *args, **kwargs):
 
 
 def tweet_create_view(request, *args, **kwargs):
+    user = request.user
+    if not request.user.is_authenticated:
+        user = None
+        if is_ajax(request=request):
+            return JsonResponse({}, status=401)
+        return redirect(settings.LOGIN_URL)
+    
     form = TweetForm(request.POST or None)
     next_url = request.POST.get("next") or None
+
     if form.is_valid():
         obj = form.save(commit=False)
+        obj.user = user
         obj.save()
 
         if is_ajax(request=request):
@@ -32,6 +41,7 @@ def tweet_create_view(request, *args, **kwargs):
         if next_url != None and url_has_allowed_host_and_scheme(next_url, ALLOWED_HOSTS):
             return redirect(next_url)
         form = TweetForm()
+
     if form.errors:
         if is_ajax(request=request):
             return JsonResponse(form.errors, status=400)
