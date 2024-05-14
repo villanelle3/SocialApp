@@ -75,7 +75,7 @@
                 }else if(xhr.status === 500){
                     alert("There was a server error. Please, try again later")
                 }
-                else if(xhr.status === 401){
+                else if(xhr.status === 401 || xhr.status === 403){
                     alert("You must login!")
                     window.location.href = "/login"
                 }
@@ -101,7 +101,7 @@
             xhr.open(method, url);
             xhr.onload = function() {
                 const serverResponse = xhr.response;
-                const listedItems = serverResponse.response;
+                const listedItems = serverResponse;
                 let finalTweetStr = "";
                 for (let i = 0; i < listedItems.length; i++){
                     var currentItem = formatTweet(listedItems[i]);
