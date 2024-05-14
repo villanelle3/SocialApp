@@ -2,8 +2,13 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.http import HttpResponse, Http404, JsonResponse
 from django.utils.http import url_has_allowed_host_and_scheme
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 from .models import Tweet
 from .forms import TweetForm
+from .serializers import TweetSerializer
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
@@ -11,14 +16,23 @@ ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
-# Create your views here.
-
 
 def home_view(request, *args, **kwargs):
     return render(request, "pages/home.html", context={}, status=200)
 
 
+@api_view(["POST"])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def tweet_create_view(request, *args, **kwargs):
+    serializer = TweetSerializer(data = request.POST)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        # return JsonResponse(serializer.data, status = 201)
+        return Response(serializer.data, status = 201)
+    return Response({}, status = 400)
+
+def tweet_create_view_DJANGO_ONLY(request, *args, **kwargs):
     user = request.user
     if not request.user.is_authenticated:
         user = None
@@ -48,8 +62,13 @@ def tweet_create_view(request, *args, **kwargs):
 
     return render(request, "components/forms.html", context={"form": form})
 
-
+@api_view(["GET"])
 def tweet_list_view(request, *args, **kwargs):
+    QuerySet = Tweet.objects.all()
+    serializer = TweetSerializer(QuerySet, many=True)
+    return Response(serializer.data)
+
+def tweet_list_view_DJANGO_ONLY(request, *args, **kwargs):
     QuerySet = Tweet.objects.all()
     tweets_list = [x.serialize() for x in QuerySet]
     data = {
@@ -59,7 +78,17 @@ def tweet_list_view(request, *args, **kwargs):
     return JsonResponse(data)
 
 
+@api_view(["GET"])
 def tweet_detail_view(request, tweet_id, *args, **kwargs):
+    QuerySet = Tweet.objects.filter(id = tweet_id)
+    if not QuerySet.exists():
+        return Response({}, status=404)
+    obj = QuerySet.first()
+    serializer = TweetSerializer(obj)
+    return Response(serializer.data, status=200)
+
+
+def tweet_detail_view_DAJNGO_PURE(request, tweet_id, *args, **kwargs):
     """
     REST API VIEW
     """
