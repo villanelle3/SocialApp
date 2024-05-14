@@ -8,7 +8,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import Tweet
 from .forms import TweetForm
-from .serializers import TweetSerializer
+from .serializers import TweetSerializer, TweetActionSerializer
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
@@ -25,12 +25,13 @@ def home_view(request, *args, **kwargs):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def tweet_create_view(request, *args, **kwargs):
-    serializer = TweetSerializer(data = request.POST)
+    serializer = TweetSerializer(data=request.POST)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         # return JsonResponse(serializer.data, status = 201)
-        return Response(serializer.data, status = 201)
-    return Response({}, status = 400)
+        return Response(serializer.data, status=201)
+    return Response({}, status=400)
+
 
 def tweet_create_view_DJANGO_ONLY(request, *args, **kwargs):
     user = request.user
@@ -39,7 +40,7 @@ def tweet_create_view_DJANGO_ONLY(request, *args, **kwargs):
         if is_ajax(request=request):
             return JsonResponse({}, status=401)
         return redirect(settings.LOGIN_URL)
-    
+
     form = TweetForm(request.POST or None)
     next_url = request.POST.get("next") or None
 
@@ -62,11 +63,13 @@ def tweet_create_view_DJANGO_ONLY(request, *args, **kwargs):
 
     return render(request, "components/forms.html", context={"form": form})
 
+
 @api_view(["GET"])
 def tweet_list_view(request, *args, **kwargs):
     QuerySet = Tweet.objects.all()
     serializer = TweetSerializer(QuerySet, many=True)
     return Response(serializer.data)
+
 
 def tweet_list_view_DJANGO_ONLY(request, *args, **kwargs):
     QuerySet = Tweet.objects.all()
@@ -80,7 +83,7 @@ def tweet_list_view_DJANGO_ONLY(request, *args, **kwargs):
 
 @api_view(["GET"])
 def tweet_detail_view(request, tweet_id, *args, **kwargs):
-    QuerySet = Tweet.objects.filter(id = tweet_id)
+    QuerySet = Tweet.objects.filter(id=tweet_id)
     if not QuerySet.exists():
         return Response({}, status=404)
     obj = QuerySet.first()
@@ -104,3 +107,50 @@ def tweet_detail_view_DAJNGO_PURE(request, tweet_id, *args, **kwargs):
         status = 404
 
     return JsonResponse(data, status=status)
+
+
+@api_view(["DELETE", "POST"])
+@permission_classes([IsAuthenticated])
+def tweet_delete_view(request, tweet_id, *args, **kwargs):
+    QuerySet = Tweet.objects.filter(id=tweet_id)
+    if not QuerySet.exists():
+        return Response({}, status=404)
+    QuerySet = QuerySet.filter(user=request.user)
+    if not QuerySet.exists():
+        return Response({"message": "You cannot delete this tweet!"}, status=401)
+
+    obj = QuerySet.first()
+    obj.delete()
+    return Response({"message": "Tweet removed!"}, status=200)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def tweet_action_view(request, *args, **kwargs):
+    """
+    id is required
+    Like, unlike, retweet
+    """
+    serializer = TweetActionSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+
+        data = serializer.validated_data
+        tweet_id = data.get("id")
+        action = data.get("action")
+
+        QuerySet = Tweet.objects.filter(id=tweet_id)
+
+        if not QuerySet.exists():
+            return Response({}, status=404)
+        
+        obj = QuerySet.first()
+
+        if action == "Like":
+            obj.likes.add(request.user)
+            serializer = TweetSerializer(obj)
+            return Response(serializer.data, status=200)
+        elif action == "unlike":
+            obj.likes.remove(request.user)
+        elif action == "retweet":  
+            pass
+
+    return Response({"message": "Tweet liked!"}, status=200)
