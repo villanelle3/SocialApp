@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-mo(b1kt(syxmvt#0^y4rj5!wej!d9d$)x+vonlzx41mcp@c^=8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", ".cfe.sh"]
+ALLOWED_HOSTS = ["127.0.0.1", ".cfe.sh", "localhost"]
 LOGIN_URL = ["/login"]
 MAX_LENGTH = 240
 TWEET_ACTION_OPTIONS = ["Like", "unlike", "retweet"]
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    "corsheaders",
     "rest_framework",
     
     "tweets",
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -125,6 +127,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_URLS_REGEX = r"^/api/.*$"
 
 DEFAULT_RENDERER_CLASSES = [
         'rest_framework.renderers.JSONRenderer',
