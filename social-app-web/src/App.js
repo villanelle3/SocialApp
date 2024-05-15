@@ -19,6 +19,14 @@ function loadTweets(callback){
   xhr.send();
 }
 
+function Tweet(props){
+  const {tweet} = props
+  const className = props.className ? props.className : "col-10 mx-auto col-md-6"
+  return <div className={className}>
+    <p>{tweet.content}</p>
+  </div>
+}
+
 function App() {
   const [tweets, setTweets] = useState([])
   useEffect(() => {
@@ -35,14 +43,13 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div>Hello</div>
         <div>
           <h2>Tweets:</h2>
-          <ul>
-            {tweets.map((tweet, index) => (
-              <li key={index}>{tweet.content}</li>
+          <div>
+            {tweets.map((item, index) => (
+              <Tweet tweet={item} key={index} className="my-5 py-5 bg-white text-dark"/>
             ))}
-          </ul>
+          </div>
         </div>
       </header>
     </div>
