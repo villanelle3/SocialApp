@@ -8,7 +8,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import Tweet
 from .forms import TweetForm
-from .serializers import TweetSerializer, TweetActionSerializer
+from .serializers import TweetSerializer, TweetActionSerializer, TweetCreateSerializer
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
@@ -25,7 +25,7 @@ def home_view(request, *args, **kwargs):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def tweet_create_view(request, *args, **kwargs):
-    serializer = TweetSerializer(data=request.POST)
+    serializer = TweetCreateSerializer(data=request.POST)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         # return JsonResponse(serializer.data, status = 201)
@@ -123,6 +123,7 @@ def tweet_delete_view(request, tweet_id, *args, **kwargs):
     obj.delete()
     return Response({"message": "Tweet removed!"}, status=200)
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def tweet_action_view(request, *args, **kwargs):
@@ -136,6 +137,7 @@ def tweet_action_view(request, *args, **kwargs):
         data = serializer.validated_data
         tweet_id = data.get("id")
         action = data.get("action")
+        content = data.get("content")
 
         QuerySet = Tweet.objects.filter(id=tweet_id)
 
@@ -151,6 +153,9 @@ def tweet_action_view(request, *args, **kwargs):
         elif action == "unlike":
             obj.likes.remove(request.user)
         elif action == "retweet":  
-            pass
+            parent_obj = obj
+            new_tweet = Tweet.objects.create(user=request.user, parent=parent_obj, content=content)
+            serializer = TweetSerializer(new_tweet)
+            return Response(serializer.data, status=200)
 
     return Response({"message": "Tweet liked!"}, status=200)
