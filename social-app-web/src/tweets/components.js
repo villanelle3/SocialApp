@@ -23,7 +23,15 @@ export function TweetsList(props){
 export function ActionBtn(props){
     const {tweet, action} = props
     const className = props.className ? props.className : "btn btn-primary btn-sm"
-    return action.type === "Like" ? <button className={className}> {tweet.likes} Likes</button> : null
+    const actionDisplay = action.display ? action.display : "Action"
+    const display = action.type === "Like" ? `${tweet.likes} ${actionDisplay}` : actionDisplay
+    const handleClick = (event) => {
+        event.preventDefault()
+        if (action.type === "Like"){
+            console.log(tweet.likes + 1)
+        }
+    }
+    return <button className={className} onClick={handleClick}> {display} </button>
 }
 
 export function Tweet(props){
@@ -32,8 +40,9 @@ export function Tweet(props){
     return <div className={className}>
         <p>{tweet.content}</p>
         <div className="btn btn-group">
-            <ActionBtn tweet={tweet} action={{type:"Like"}}/>
-            <ActionBtn tweet={tweet} action={{type:"unlike"}}/>
+            <ActionBtn tweet={tweet} action={{type:"Like", display:"Likes"}}/>
+            <ActionBtn tweet={tweet} action={{type:"unlike", display:"Unlike"}}/>
+            <ActionBtn tweet={tweet} action={{type:"retweet", display:"Retweet"}}/>
         </div>
     </div>
 }
