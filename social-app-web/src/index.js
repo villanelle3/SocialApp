@@ -5,24 +5,20 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { TweetsComponent } from './tweets';
 
-const appEl = document.getElementById('root')
-
-if (appEl){
-  const root = ReactDOM.createRoot(appEl);
-  root.render(
+// Renderiza o componente App no elemento com o id "root" (se existir)
+const appEl = document.getElementById('root');
+if (appEl) {
+  ReactDOM.createRoot(appEl).render(
     <React.StrictMode>
       <App />
     </React.StrictMode>
   );
 }
 
-const tweetsEl = document.getElementById('social-app')
-if (tweetsEl){
-  ReactDOM.render(<TweetsComponent/>, tweetsEl)
+// Renderiza o componente TweetsComponent no elemento com o id "social-app" (se existir)
+const tweetsEl = document.getElementById('social-app');
+if (tweetsEl) {
+  ReactDOM.createRoot(tweetsEl).render(<TweetsComponent />);
 }
 
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

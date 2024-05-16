@@ -1,30 +1,40 @@
 import React, {useEffect, useState} from "react";
-import {loadTweets} from "../lookup"
+import {apiTweetList, apiTweetCreate} from "./lookup"
 
 export function TweetsComponent(props){
     const textAreaRef = React.createRef()
     const [newTweets, setNewTweets] = useState([])
-    const handleSubmit = (event) =>{
-        event.preventDefault();
-        const newVal = textAreaRef.current.value;
+
+    const handleBackendUpdate = (response, status) =>{
+        // backend api response handler
         const tempNewTweets = [...newTweets];
         // push -> final da lista
         // unshift -> inicio da lista
-        tempNewTweets.unshift({
-            content: newVal,
-            likes: 0,
-            id: 123123
-        })
-        setNewTweets(tempNewTweets)
+        if (status === 201){
+            // tempNewTweets.unshift({content: newVal, likes: 0, id: 123123})
+            tempNewTweets.unshift(response)
+            setNewTweets(tempNewTweets)
+        }else{
+            console.log(response)
+            alert("An error occurred. Please, try again")
+        }  
+    }
+    
+    const handleSubmit = (event) =>{
+        event.preventDefault();
+        const newVal = textAreaRef.current.value;
+        // backend api request
+        apiTweetCreate(newVal, handleBackendUpdate)
         textAreaRef.current.value = ""
     }
+
     return (
         <div className={props.className}>
             <div className="col-12 mb-3">
                 <form onSubmit={handleSubmit}>
                     <textarea ref={textAreaRef} required={true} className="form-control" name="tweet">
                     </textarea>
-                    <button type="submit" className="btn btn-primary my-3">Tweet</button>
+                    <button type="submit" className="btn btn-success my-3">Tweet</button>
                 </form>
             </div>
             <TweetsList newTweets={newTweets} />
@@ -35,6 +45,7 @@ export function TweetsComponent(props){
 export function TweetsList(props){
     const [tweetsInit, setTweetsInit] = useState(props.newTweets ? props.newTweets : []);
     const [tweets, setTweets] = useState([]);
+    const [tweetsDidSet, setTweetsDidSet] = useState(false);
 
     useEffect(() => {
         const final = [...props.newTweets].concat(tweetsInit);
@@ -44,16 +55,20 @@ export function TweetsList(props){
     }, [props.newTweets, tweets, tweetsInit]);
 
     useEffect(() => {
-        const myCallback = (response, status) => {
-            if (status === 200) {
-                const finalTweetsInit = [...response].concat(tweetsInit)
-                setTweetsInit(finalTweetsInit);
-            } else {
-                alert("There was an error");
-            }
-        };
-        loadTweets(myCallback);
-    }, [tweetsInit]);
+        if (tweetsDidSet === false){
+            const handleTweetListLookup = (response, status) => {
+                if (status === 200) {
+                    const finalTweetsInit = [...response].concat(tweetsInit)
+                    setTweetsInit(finalTweetsInit);
+                    setTweetsDidSet(true)
+                } else {
+                    alert("There was an error");
+                }
+            };
+            apiTweetList(handleTweetListLookup);
+        }
+        
+    }, [tweetsInit, tweetsDidSet, setTweetsDidSet]);
 
     return (
         tweets.map((item, index) => (
