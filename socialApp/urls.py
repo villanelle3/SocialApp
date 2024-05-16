@@ -27,3 +27,4 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # http://localhost:8000/static/js/main.fd5ff56d.js
