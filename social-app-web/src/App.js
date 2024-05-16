@@ -1,6 +1,6 @@
 import React from "react";
 import './App.css';
-import { TweetsList } from "./tweets";
+import { TweetsComponent } from "./tweets";
 
 function App() {
   return (
@@ -9,7 +9,7 @@ function App() {
         <div>
           <h2>Tweets:</h2>
           <div>
-            <TweetsList/>
+            <TweetsComponent/>
           </div>
         </div>
       </header>
