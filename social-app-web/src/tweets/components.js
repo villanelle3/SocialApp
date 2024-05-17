@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {apiTweetList, apiTweetCreate} from "./lookup"
+import {apiTweetList, apiTweetCreate, apiTweetAction} from "./lookup"
 
 export function TweetsComponent(props){
     const textAreaRef = React.createRef()
@@ -82,22 +82,30 @@ export function ActionBtn(props){
     const {tweet, action} = props;
 
     const [likes, setLikes] = useState(tweet.likes ? tweet.likes : 0);
-    const [userLike, setUserLike] = useState(tweet.userLike === true ? true : false)
+    // const [userLike, setUserLike] = useState(tweet.userLike === true ? true : false)
 
     const className = props.className ? props.className : "btn btn-primary btn-sm";
     const actionDisplay = action.display ? action.display : "Action";
 
+    const handleActionBackendEvent = (response, status) =>{
+        if(status === 200){
+            setLikes(response.likes)
+            // setUserLike(true)
+        }
+        // if (action.type === "Like"){
+        //     if (userLike){
+        //         setLikes(likes - 1);
+        //         setUserLike(false);
+        //     }else{
+        //         setLikes(likes + 1);
+        //         setUserLike(true);
+        //     }
+        // }
+    }
+
     const handleClick = (event) => {
         event.preventDefault();
-        if (action.type === "Like"){
-            if (userLike){
-                setLikes(likes - 1);
-                setUserLike(false);
-            }else{
-                setLikes(likes + 1);
-                setUserLike(true);
-            }
-        }
+        apiTweetAction(tweet.id, action.type, handleActionBackendEvent)  
     };
     
     const display = action.type === "Like" ? `${likes} ${actionDisplay}` : actionDisplay;
@@ -105,11 +113,27 @@ export function ActionBtn(props){
     return <button className={className} onClick={handleClick}> {display} </button>;
 }
 
+export function ParentTweet(props){
+    const {tweet} = props
+    return( tweet.parent ?
+        <div className="row">
+            <div className="col-11 mx-auto p-3 border rounded">
+                <p className="mb-0 text-muted small">Retweet</p>
+                    <Tweet className={" "} tweet={tweet.parent}/>
+                </div>
+        </div>
+        : null
+    )
+}
+
 export function Tweet(props){
     const {tweet} = props
     const className = props.className ? props.className : "col-10 mx-auto col-md-6"
     return <div className={className}>
-        <p>{tweet.content}</p>
+        <div>
+            <p>{tweet.content}</p>
+            <ParentTweet tweet={tweet} />
+        </div>
         <div className="btn btn-group">
             <ActionBtn tweet={tweet} action={{type:"Like", display:"Likes"}}/>
             <ActionBtn tweet={tweet} action={{type:"unlike", display:"Unlike"}}/>
