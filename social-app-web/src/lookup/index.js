@@ -16,23 +16,23 @@ function getCookie(name) {
     return cookieValue;
 }
 
-export function backendLookup(method, endpoint, callback, data){
+export function backendLookup(method, endpoint, callback, data) {
     // const csrftoken2 = Cookies.get('csrftoken');
     let jsonData;
-    if (data){
+    if (data) {
         jsonData = JSON.stringify(data)
     }
 
     const xhr = new XMLHttpRequest();
-    const url = `http://localhost:8000/${endpoint}/`;
+    const url = `http://localhost:8000/${endpoint}`;
     const responseType = "json";
 
     xhr.responseType = responseType;
     const csrftoken = getCookie('csrftoken');
     xhr.open(method, url)
     xhr.setRequestHeader("Content-Type", "application/json")
-    
-    if (csrftoken){
+
+    if (csrftoken) {
         xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest");
         xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         xhr.setRequestHeader("X-CSRFToken", csrftoken)
@@ -41,10 +41,11 @@ export function backendLookup(method, endpoint, callback, data){
     xhr.onload = function() {
         callback(xhr.response, xhr.status)
     };
-    xhr.onerror = function (e){
+    xhr.onerror = function(e) {
         console.log(e)
-        callback({"message": `The request was an error`}, 400)
+        callback({
+            "message": `The request was an error`
+        }, 400)
     }
     xhr.send(jsonData);
 }
-
