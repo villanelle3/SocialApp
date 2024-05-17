@@ -67,6 +67,9 @@ def tweet_create_view_DJANGO_ONLY(request, *args, **kwargs):
 @api_view(["GET"])
 def tweet_list_view(request, *args, **kwargs):
     QuerySet = Tweet.objects.all()
+    username = request.GET.get("username")
+    if username != None:
+        QuerySet = QuerySet.filter(user__username__iexact=username)
     serializer = TweetSerializer(QuerySet, many=True)
     return Response(serializer.data)
 

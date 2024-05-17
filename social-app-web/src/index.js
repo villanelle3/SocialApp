@@ -16,9 +16,11 @@ if (appEl) {
 }
 
 // Renderiza o componente TweetsComponent no elemento com o id "social-app" (se existir)
+const e = React.createElement
 const tweetsEl = document.getElementById('social-app');
 if (tweetsEl) {
-  ReactDOM.createRoot(tweetsEl).render(<TweetsComponent />);
+  console.log(tweetsEl.dataset)
+  ReactDOM.createRoot(tweetsEl).render(e(TweetsComponent, tweetsEl.dataset), tweetsEl);
 }
 
 reportWebVitals();
