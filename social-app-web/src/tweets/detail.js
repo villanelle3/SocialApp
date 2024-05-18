@@ -20,6 +20,17 @@ export function Tweet(props){
     const [actionTweet, setActionTweet] = useState(props.tweet ? props.tweet : null)
     const className = props.className ? props.className : "col-10 mx-auto col-md-6"
     
+    const path = window.location.pathname
+    const match = path.match(/(?<tweetid>\d+)/)
+    const URLtweetId = match ? match.groups.tweetid : -1
+        
+    const isDetail = `${tweet.id}` === `${URLtweetId}`;
+
+    const handleLink = (event) => {
+        event.preventDefault()
+        window.location.href = `/${tweet.id}`
+    }
+
     const handlePerformAction = (newActionTweet, status) =>{
         if(status === 200){
             setActionTweet(newActionTweet)
@@ -30,16 +41,19 @@ export function Tweet(props){
         }
     }
     
-    return <div className={className}>
+    return <div className={className} >
         <div>
             <p>{tweet.content}</p>
             <ParentTweet tweet={tweet} />
         </div>
-        {(actionTweet && hideActions !== true) && <div className="btn btn-group">
-            <ActionBtn tweet={actionTweet} didPeformAction={handlePerformAction} action={{type:"Like", display:"Likes"}}/>
-            <ActionBtn tweet={actionTweet} didPeformAction={handlePerformAction} action={{type:"unlike", display:"Unlike"}}/>
-            <ActionBtn tweet={actionTweet} didPeformAction={handlePerformAction} action={{type:"retweet", display:"Retweet"}}/>
-        </div>}
+        <div className="btn btn-group">
+            {(actionTweet && hideActions !== true) && <React.Fragment>
+                <ActionBtn tweet={actionTweet} didPeformAction={handlePerformAction} action={{type:"Like", display:"Likes"}}/>
+                <ActionBtn tweet={actionTweet} didPeformAction={handlePerformAction} action={{type:"unlike", display:"Unlike"}}/>
+                <ActionBtn tweet={actionTweet} didPeformAction={handlePerformAction} action={{type:"retweet", display:"Retweet"}}/>
+            </React.Fragment>}
+            {isDetail === true ? null : <button onClick={handleLink} className="btn btn-outline-primary btn-small">View</button>}
+        </div>
     </div>
 }
 
