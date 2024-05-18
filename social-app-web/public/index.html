@@ -44,17 +44,26 @@
 </head>
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="social-app" data-username="julia" data-can-tweet="false"></div>
-  <!-- default: <div id="root"></div> -->
-  <!--
-    This HTML file is a template.
-    If you open it directly in the browser, you will see an empty page.
 
-    You can add webfonts, meta tags, or analytics to this file.
-    The build step will place the bundled scripts into the <body> tag.
+  <div id="tweet-container"></div>
+  <div id="social-app" data-username="superuser" data-can-tweet="false"></div>
 
-    To begin the development, run `npm start` or `yarn start`.
-    To create a production bundle, use `npm run build` or `yarn build`.
-  -->
+
+  <script>
+    var path = window.location.pathname
+    var idRegx = /(?<tweetid>\d+)/
+    var match = path.match(idRegx)
+    
+    if (match){
+      var tweetId = match.groups.tweetid
+      var socialAppEl = document.getElementById("social-app");
+      socialAppEl.className = "d-none"
+      var tweetEl = '<div class="social-app-detail" data-tweet-id="' + tweetId + '" data-class-name="col-6 mx-auto">';
+      var mainContainer = document.getElementById("tweet-container");
+      mainContainer.innerHTML = tweetEl
+    }
+
+  </script>
+
 </body>
 </html>
