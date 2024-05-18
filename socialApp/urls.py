@@ -18,10 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from accounts.views import (login_view, logout_view, register_view)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("login/", login_view),
+    path("logout/", logout_view),
+    path("register/", register_view),
     path("", include("tweets.urls")),
 ]
 
