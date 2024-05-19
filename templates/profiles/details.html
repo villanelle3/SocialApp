@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div class="social-app-profile-badge" data-username="{{ username }}" ></div>
+    <!-- <p>{{first_name}} {{last_name}}</p>
+    <p>@{{username}}</p>
+    <p>{{bio}}</p>
+    <p>{{location}}</p>
+    <p>{{follower_count}} followers</p>
+    <p>{{following_count}} following</p> -->
     <div id="social-app" 
         data-username="{{username}}" 
         data-can-tweet="false">
