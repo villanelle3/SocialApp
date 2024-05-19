@@ -25,6 +25,10 @@ def home_view(request, *args, **kwargs):
 
 
 def local_tweets_list_view(request, *args, **kwargs):
+    if not request.user.is_authenticated:
+        # Tela de inicio para quem nao esta logado
+        # return redirect("/login?next=/profile/update")
+        pass
     return render(request, "tweets/list.html")
 
 def local_tweets_detail_view(request, tweet_id, *args, **kwargs):
