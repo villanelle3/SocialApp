@@ -1,7 +1,5 @@
 from rest_framework import serializers
-
 from .models import Profile
-
 
 class PublicProfileSerializer(serializers.ModelSerializer):
     first_name = serializers.SerializerMethodField(read_only=True)
