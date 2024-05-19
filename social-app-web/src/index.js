@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { TweetsComponent, TweetDetailComponent } from './tweets';
+import { TweetsComponent, TweetDetailComponent, FeedComponent } from './tweets';
 
 // Renderiza o componente App no elemento com o id "root" (se existir)
 const appEl = document.getElementById('root');
@@ -21,6 +21,12 @@ const tweetsEl = document.getElementById('social-app');
 if (tweetsEl) {
   console.log(tweetsEl.dataset)
   ReactDOM.createRoot(tweetsEl).render(e(TweetsComponent, tweetsEl.dataset), tweetsEl);
+}
+
+const tweetsFeedEl = document.getElementById('social-app-feed');
+if (tweetsFeedEl) {
+  console.log(tweetsFeedEl.dataset)
+  ReactDOM.createRoot(tweetsFeedEl).render(e(FeedComponent, tweetsFeedEl.dataset), tweetsFeedEl);
 }
 
 const tweetDetailElement = document.querySelectorAll(".social-app-detail")

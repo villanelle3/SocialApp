@@ -5,8 +5,8 @@ from . import views
 urlpatterns = [
     # http://localhost:8000/
 
-    # path("", views.home_view),
-    path("", views.local_tweets_list_view),
+    path("", views.home_view),
+    path("global/", views.local_tweets_list_view),
 
     path("tweets/<int:tweet_id>/", views.tweet_detail_view),
     path("<int:tweet_id>/", views.local_tweets_detail_view),
